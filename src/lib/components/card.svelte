@@ -23,6 +23,9 @@
 	let showSharer = writable(false);
 	let copierAlert: HTMLElement;
 	let cardContainer: HTMLElement | null;
+	let terrainBox: HTMLElement | null;
+	let terrainBoxWidth: number = 0;
+	let terrainBoxHeight: number = 0;
 
 	function getCountryImageKey(countryName: string): string {
 		const countryMapping: { [key: string]: string } = {
@@ -69,8 +72,8 @@
 			const finalCanvas = document.createElement('canvas');
 			const ctx = finalCanvas.getContext('2d');
 
-			finalCanvas.width = 3500;
-			finalCanvas.height = 2000;
+			finalCanvas.width = 2600;
+			finalCanvas.height = 1600;
 
 			if (ctx) {
 				ctx.fillStyle = '#ffffff';
@@ -179,6 +182,12 @@
 		if (isSmall) {
 			interactivity();
 		}
+
+		if (terrainBox) {
+			const rect = terrainBox.getBoundingClientRect();
+			terrainBoxWidth = rect.width;
+			terrainBoxHeight = rect.height;
+		}
 	});
 </script>
 
@@ -200,15 +209,13 @@
 		out:scale={{ duration: 1000, delay: 1000, easing: (t) => t * t }}
 	>
 		{#if !$isChartMode}
-			<div class="card_columns" id="terrain_column">
+			<div class="card_columns" id="terrain_column" bind:this={terrainBox}>
 				{#if countryImages[getCountryImageKey(countryData.CountryName)]}
-					<enhanced:img
+					<img
 						in:fade={{ duration: 1000, delay: 1000, easing: (t) => t * t }}
 						src={countryImages[getCountryImageKey(countryData.CountryName)]}
 						alt={countryData.CountryName}
 						class="terrain_image"
-						style="object-fit: contain;"
-						sizes="600px"
 					/>
 				{/if}
 			</div>
@@ -292,7 +299,7 @@
 				<div class="chart_header">
 					<div class="number_container">
 						<h3>Population<QuestionMark type="Population" /></h3>
-						<p>{countryData.Population} people</p>
+						<p>{countryData.Population}M people</p>
 					</div>
 					<div class="number_container">
 						<h3>Gov. form<QuestionMark type="Gov. form" /></h3>
@@ -300,7 +307,7 @@
 					</div>
 					<div class="number_container">
 						<h3>GDP<QuestionMark type="GDP" /></h3>
-						<p>${countryData.Gdp} million</p>
+						<p>${countryData.Gdp} Million</p>
 					</div>
 					{#each globalOverview as item}
 						<div class="number_container">
@@ -408,7 +415,9 @@
 			const siblings = Array.from(document.querySelectorAll('.small_card_container')).filter(
 				(child) => child !== element
 			);
-			const yellowSpheres = document.querySelectorAll('.small_card_sphere') as NodeListOf<HTMLElement>;
+			const yellowSpheres = document.querySelectorAll(
+				'.small_card_sphere'
+			) as NodeListOf<HTMLElement>;
 			element.style.transform = 'scale(15)';
 			element.style.zIndex = '1000';
 			element.style.opacity = '1';
@@ -429,8 +438,10 @@
 			const siblings = Array.from(document.querySelectorAll('.small_card_container')).filter(
 				(child) => child !== element
 			);
-			const yellowSpheres = document.querySelectorAll('.small_card_sphere') as NodeListOf<HTMLElement>;
-			element.style.transform = 'scale(8)';
+			const yellowSpheres = document.querySelectorAll(
+				'.small_card_sphere'
+			) as NodeListOf<HTMLElement>;
+			element.style.transform = 'scale(5)';
 			element.style.zIndex = '1';
 			element.style.transition = 'transform 0.65s ease-in-out';
 			element.style.transitionDelay = '0.1s';
@@ -447,7 +458,7 @@
 	>
 		<div class="small_map">
 			{#if countryImages[getCountryImageKey(countryData.CountryName)]}
-				<enhanced:img
+				<img
 					src={countryImages[getCountryImageKey(countryData.CountryName)]}
 					alt="Map"
 					loading="lazy"
@@ -606,20 +617,17 @@
 	}
 
 	:global(.terrain_image) {
-		width: 100%;
-		height: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		overflow: hidden;
+		max-width: 100%;
+		max-height: 100%;
+		width: auto;
+		height: auto;
+		object-fit: contain;
+		object-position: center;
 	}
 
 	:global(.terrain_image picture) {
 		width: 100%;
 		height: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
 	}
 
 	:global(.terrain_image > picture > img) {
@@ -755,6 +763,7 @@
 	.card_columns:nth-of-type(1) {
 		align-items: center;
 		justify-content: center;
+		position: relative;
 	}
 
 	.card_columns:nth-of-type(2) {
@@ -1217,7 +1226,7 @@
 
 	:global(.markers.show > .small_card_sphere) {
 		transition-delay: 0s;
-		transform: scale(7);
+		transform: scale(5);
 		opacity: 1;
 		transition:
 			transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1),
@@ -1227,7 +1236,7 @@
 
 	:global(.markers.show > .small_card_container) {
 		transition-delay: 3s;
-		transform: scale(7);
+		transform: scale(5);
 		transform-origin: left top;
 		opacity: 1;
 		transition:
