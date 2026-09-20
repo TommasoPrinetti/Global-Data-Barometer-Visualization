@@ -1,9 +1,10 @@
 import Papa from 'papaparse';
 
-import earthMap from '$lib/assets/8k.jpg?url';
-import normalMap from '$lib/assets/8k_normal_opt.jpg?url';
-import specularMap from '$lib/assets/8k_specular.webp?url';
 import csv from '$lib/assets/dataset.csv?raw';
+
+const earthMap = '/assets/earth-map.webp';
+const normalMap = '/assets/earth-normal.jpg';
+const specularMap = '/assets/earth-specular.webp';
 
 import angola from '$lib/assets/COUNTRYMAPS/angola.jpg';
 import argentina from '$lib/assets/COUNTRYMAPS/argentina.jpg';
